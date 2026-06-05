@@ -33,3 +33,22 @@ class SeatStore:
         if seat_id not in self._seats:
             raise ValueError("Seat does not exist.")
         return self._seats[seat_id]
+
+    def cancel_all_by_name(self, name):
+        """특정 이름으로 예약된 모든 좌석을 찾아 일괄 취소하는 신규 기능"""
+        if not name:
+            raise ValueError("Name must be provided for bulk cancellation.")
+        
+        canceled_seats = []
+        for seat_id, reserved_name in list(self._seats.items()):
+            if reserved_name == name:
+                self._seats[seat_id] = None
+                canceled_seats.append(seat_id)
+        
+        if not canceled_seats:
+            raise ValueError(f"No reservations found for name: {name}")
+        return canceled_seats
+
+    def list_available_seats(self):
+        """비어있는 좌석만 필터링해서 반환하는 신규 기능"""
+        return [(seat_id, name) for seat_id, name in self._seats.items() if name is None]
